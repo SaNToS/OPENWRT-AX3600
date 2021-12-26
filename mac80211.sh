@@ -64,6 +64,7 @@ __get_band_defaults() {
 BEGIN {
         bands = ""
 }
+
 ($1 == "Band" || $1 == "") && band {
         if (channel) {
 		mode="NOHT"
@@ -77,6 +78,7 @@ BEGIN {
         }
         band=""
 }
+
 $1 == "Band" {
         band = $2
         channel = ""
@@ -84,18 +86,23 @@ $1 == "Band" {
 	ht = ""
 	he = ""
 }
+
 $0 ~ "Capabilities:" {
 	ht=1
 }
+
 $0 ~ "VHT Capabilities" {
 	vht=1
 }
+
 $0 ~ "HE Iftypes" {
 	he=1
 }
+
 $1 == "*" && $3 == "MHz" && $0 !~ /disabled/ && band && !channel {
         channel = $4
 }
+
 END {
         print bands
 }'
@@ -164,27 +171,21 @@ detect_mac80211() {
 			set wireless.radio${devidx}=wifi-device
 			set wireless.radio${devidx}.type=mac80211
 			${dev_id}
-			set wireless.radio0.channel=5
-                        set wireless.radio1.channel=36
-                        set wireless.radio2.channel=10
-			set wireless.radio0.band=2g
-			set wireless.radio1.band=5g
-			set wireless.radio2.band=2g
-			set wireless.radio0.htmode=HE40
-			set wireless.radio1.htmode=HE80
-			set wireless.radio2.htmode=HE40
-			set wireless.radio0.disabled=1
-                        set wireless.radio1.disabled=0
-                        set wireless.radio2.disabled=1
+			set wireless.radio${devidx}.channel=${channel}
+			set wireless.radio0.band=5g
+			set wireless.radio1.band=2g
+			set wireless.radio0.htmode=HE80
+			set wireless.radio1.htmode=HE40
+			set wireless.radio0.disabled=0
+			set wireless.radio1.disabled=1
 			set wireless.radio${devidx}.country=US
 			
 			set wireless.default_radio${devidx}=wifi-iface
 			set wireless.default_radio${devidx}.device=radio${devidx}
 			set wireless.default_radio${devidx}.network=lan
 			set wireless.default_radio${devidx}.mode=ap
-                        set wireless.default_radio0.ssid=CL_AloT
-                        set wireless.default_radio1.ssid=CL_5G
-                        set wireless.default_radio2.ssid=CL
+			set wireless.default_radio0.ssid=CL_5G
+                        set wireless.default_radio1.ssid=CL
                         set wireless.default_radio${devidx}.encryption=psk2
                         set wireless.default_radio${devidx}.key=12345678123
 
